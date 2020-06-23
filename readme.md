@@ -3,47 +3,36 @@
 Use Face Id in your browser on macOS for easy and fast login.
 Insted of  entering a Master Password in Enpass browser extension one could use this python script which would recognize your face (using opencv and face_recognition) based on sample facial images you provide. 
 
+<img width="1158" alt="Screenshot 2020-06-23 at 14 16 04" src="https://user-images.githubusercontent.com/23553118/85402982-e7468a80-b55c-11ea-940b-a62b888b5100.png">
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+Enpass 6.4.2 (668)
+Firefox 77.0.1
+macOS Catalania
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+* Clone repo
+* Make venv
+* Install requirements.txt
+* Put pictures(3 and more pictures) where you face can be clearly seen in /faces folder.
+* In System Preferences/Security and Privacy/Camera give permission to script (to access your cam)
+* In System Preferences/Security and Privacy/Accessability give permission to script
+* In System Preferences/Security and Privacy/Screen Recording give permission to script
+* Make sure that Enpass Shortcuts in your Browser is (cmd + /)
 
-Say what the step will be
+### How to use
 
-```
-Give the example
-```
+* Run script
+* Open Firefox & Enpass
+* Go to Firefox and press Shortcut
+* Script will recognize your face and unlock Enpass
 
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
 ## Contributing
 
@@ -60,8 +49,3 @@ Contributers are welcome to adapt this code for Windows and other password manag
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
