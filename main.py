@@ -1,9 +1,13 @@
-import cv2
-import face_recognition as fr
+#!.venv_enpass/bin/python
+#Python 3.7
+"""
+Docstring
+"""
 import os
 from pathlib import Path
-import time
 from datetime import datetime
+import cv2
+import face_recognition as fr
 import numpy as np
 from numpy import array
 
@@ -13,12 +17,12 @@ from numpy import array
 def capture_img(camera, testmode):
     """
     Get an image from webcam 0 - internal, 1 - external
+    :return: captured img and img path
     """
 
     capture = cv2.VideoCapture(camera) # 0 - use built in camera
     return_value, image = capture.read()
-    del(capture)
-    
+    del capture
     if testmode == 1:
         # For test purposes -> save pic
         webcam_pics_dir = str(Path.cwd() / "webcam_pics")
@@ -49,12 +53,12 @@ def pre_encode_user_faces():
     :return: dict of (name, image encoded)
     """
 
-    if os.path.exists("encoded_user_faces.txt") == True:
+    if os.path.exists("encoded_user_faces.txt") is True:
         # If file with preencoded images exists -> read it
 
-        with open("encoded_user_faces.txt", 'r') as f: 
+        with open("encoded_user_faces.txt", 'r') as f:
             content = f.read()
-            encoded = eval(content) 
+            encoded = eval(content)
     else:
         # First use -> create fie with preencoded imgs
         encoded = {}
@@ -63,7 +67,7 @@ def pre_encode_user_faces():
                 if f.endswith(".jpg") or f.endswith(".png"):
                     encoding = encode_face_img("faces/" + f)
                     encoded[f.split(".")[0]] = encoding
-        
+
         #Save results as txt
         with open('encoded_user_faces.txt', 'w') as f:
             print(encoded, file=f)
@@ -81,11 +85,11 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
     faces_preencoded = list(preencoded_imgs.values())
     face_locations = fr.face_locations(webcam_pic) # Get faces locations on webcam pic
     webcam_face_encoding = fr.face_encodings(webcam_pic, face_locations)
-    
+
     if len(webcam_face_encoding) == 0:
         msg = 'No Faces on the Img'
         result = False
-    
+
     else:
 
         matches = fr.compare_faces(faces_preencoded, webcam_face_encoding[0])
@@ -94,7 +98,7 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
         if matches.count(True) > 1:
             msg = "Success"
             result = True
-        
+
             if testmode == 1: # Show which face matching the best
 
                 face_names = []
@@ -103,7 +107,7 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
 
                     # See if the face is a match for the known face(s)
                     matches = fr.compare_faces(faces_preencoded, face_encoding)
-                    name = "Unknown"    
+                    name = "Unknown"
                     # use the known face with the smallest distance to the new face
                     face_distances = fr.face_distance(faces_preencoded, face_encoding)
                     best_match_index = np.argmin(face_distances)
@@ -114,12 +118,15 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
 
                     for (top, right, bottom, left), name in zip(face_locations, face_names):
                         # Draw a box around the face
-                        cv2.rectangle(webcam_pic, (left-20, top-20), (right+20, bottom+20), (255, 0, 0), 2)
+                        cv2.rectangle(webcam_pic, (left-20, top-20),\
+                        (right+20, bottom+20), (255, 0, 0), 2)
 
                         # Draw a label with a name below the face
-                        cv2.rectangle(webcam_pic, (left-20, bottom -15), (right+20, bottom+20), (255, 0, 0), cv2.FILLED)
+                        cv2.rectangle(webcam_pic, (left-20, bottom -15), (right+20, bottom+20),\
+                        (255, 0, 0), cv2.FILLED)
                         font = cv2.FONT_HERSHEY_DUPLEX
-                        cv2.putText(webcam_pic, name, (left -20, bottom + 15), font, 1.0, (255, 255, 255), 2)
+                        cv2.putText(webcam_pic, name, (left -20, bottom + 15),\
+                        font, 1.0, (255, 255, 255), 2)
 
                 # Display the resulting image
                 while True:
@@ -128,17 +135,17 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         return face_names
 
-        else: 
+        else:
             msg = "No Matches Found"
             result = False
-        
+
     return result, msg
 
 
-
-
-
 def main():
+    """
+    Main
+    """
 
     testmode = 0
     webcam_pic, pic_path = capture_img(0, testmode)
@@ -146,8 +153,16 @@ def main():
     preencoded_imgs = pre_encode_user_faces()
     faceid_result = classify_face(webcam_pic, preencoded_imgs, testmode)
     print(faceid_result)
+    return faceid_result
+
 
 
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+#Full execution time is 1.8904139995574951

@@ -3,6 +3,8 @@
 webcam_pics/
 venv_enpass
 trash/
+.pylintrc
+/faces/**
 
 
 # Editors

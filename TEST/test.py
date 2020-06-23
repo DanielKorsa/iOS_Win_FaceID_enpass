@@ -63,11 +63,68 @@ import face_recognition as fr
 # print(len(encoding))
 # print(type(encoding))
 
-matches = [True, True, True, False]
+# matches = [True, True, True, False]
 
-if matches.count(True) > 1:
-    print("Success")
+# if matches.count(True) > 1:
+#     print("Success")
 
-else: 
-    print("No Matches")
+# else: 
+#     print("No Matches"
+
+# import keyboard
+
+# keyboard.wait("")
+# print("You pressed p")
+
+# from pynput import keyboard
+
+# def on_press(key):
+#     print('Key {} pressed.'.format(key))
+
+# def on_release(key):
+#     print('Key {} released.'.format(key))
+#     if str(key) == 'Key.esc':
+#         print('Exiting...')
+#         return False
+
+# with keyboard.Listener(
+#     on_press = on_press,
+#     on_release = on_release) as listener:
+#     listener.join()
+
+
+# from pynput import keyboard
+
+# # The key combination to check
+# COMBINATION = {keyboard.Key.cmd, keyboard.KeyCode.from_char('/')}
+
+# # The currently active modifiers
+# current = set()
+
+
+# def on_press(key):
+#     if key in COMBINATION:
+#         current.add(key)
+#         if all(k in current for k in COMBINATION):
+#             print('All modifiers active!')
+#     if key == keyboard.Key.esc:
+#         listener.stop()
+
+
+# def on_release(key):
+#     try:
+#         current.remove(key)
+#     except KeyError:
+#         pass
+
+
+# with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+#     listener.join()
+def get_pass():
+    path = "trash/delete.txt"
+    with open(path, "r") as f:
+        password = f.read()
+    return password
+
+
 
