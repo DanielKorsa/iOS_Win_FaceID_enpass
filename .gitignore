@@ -5,6 +5,8 @@ venv_enpass
 trash/
 .pylintrc
 /faces/**
+autogui_enter_password.py
+TEST/
 
 
 # Editors

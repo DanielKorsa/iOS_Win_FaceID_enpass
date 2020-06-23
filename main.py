@@ -1,18 +1,20 @@
 #!.venv_enpass/bin/python
-#Python 3.7
 """
-Docstring
+FaceID Recognition for Enpass Password Manager on MacOS
 """
 import os
+import subprocess
+import re
 from pathlib import Path
 from datetime import datetime
 import cv2
 import face_recognition as fr
 import numpy as np
 from numpy import array
+import pyautogui as pag
+from pynput import keyboard
 
-
-# 1. Get a webcam pic
+#Get a webcam pic
 
 def capture_img(camera, testmode):
     """
@@ -33,8 +35,6 @@ def capture_img(camera, testmode):
         pic_path = ''
 
     return image, pic_path
-
-# 2. Encode single face
 
 def encode_face_img(img):
     """
@@ -141,27 +141,107 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
 
     return result, msg
 
+def enapss_insert_pass_img_rec(password):
+    """
+    This is a more complicated way of unlocking Enpass.
+    Find text field and button by recognizing template imgs
+    """
+    # Get coordinates of "Passford text input fiel"
+    for i in range(3):
+        psw_txt_field_coords = pag.locateCenterOnScreen('TEST/text_field.png') # must be .png
+        if psw_txt_field_coords is None:
+            print('Try {}'.format(i))
+        else:
+            break
+        # if psw_txt_field_coords == None:
+        #     print('Didnt find enpass window')
+
+    x_psw, y_psw = psw_txt_field_coords
+    pag.leftClick(x_psw/2, y_psw/2)
+    pag.typewrite(password) # Write pass in text field
+    # Get coordinate os "Unlock" button
+    unlock_btn_coords = pag.locateCenterOnScreen('TEST/unlock_button.png')
+    x_btn, y_btn = unlock_btn_coords
+    pag.leftClick(x_btn/2, y_btn/2) # Click button
+
+def enapss_insert_pass_easy(password):
+    """
+    This is a fast and easy way of entering the password and pressing a button.
+    Assumin that Enpass browser extension is open and is waiting for input
+    """
+
+    pag.write(password) # enter pass
+    pag.press('enter') # press "Unlock" button
+
+
+def check_process(process_name):
+    """
+    Check if browser & Enpass processes are running
+    """
+
+    process = subprocess.Popen('pgrep ' + process_name,\
+    shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    my_pid, err = process.communicate()
+    msg = re.findall(r"\'(.*?)\'", str(my_pid))[0]
+    if msg == '':
+
+        print("{}  is not running".format(process_name))
+        return False
+
+    else:
+
+        print("{} is running".format(process_name))
+        return True
+
+def get_pass():
+    """
+    This is just an example. Dont use this way for storing passwords.
+    Find a secure solution.
+    """
+    path = "trash/delete.txt"
+    with open(path, "r") as f:
+        password = f.read()
+    return password
+
+# The key combination to check for opening Enpass in Firefox
+COMBINATION = {keyboard.Key.cmd, keyboard.KeyCode.from_char('/')}
+
+# The currently active modifiers
+current = set()
+
+def on_press(key):
+    """
+    Execute code on key combination press
+    """
+    if key in COMBINATION:
+        current.add(key)
+        if all(k in current for k in COMBINATION):
+            if check_process('firefox') and check_process('Enpass') is True:
+                testmode = 0 # for interactive testing
+                webcam_pic, pic_path = capture_img(0, testmode) # Capture webcam img
+                preencoded_imgs = pre_encode_user_faces() # Get preencoded imgs
+                faceid_result, msg = classify_face(webcam_pic, preencoded_imgs, testmode)
+                print(faceid_result, msg)
+                #time.sleep(1) # if the PC is slow delay is needed while opening enpass ext
+                if faceid_result is True:
+                    enapss_insert_pass_easy(get_pass()) #Getting master password
+
+def on_release(key):
+    """
+    Waiting until user presses the key combination
+    """
+    try:
+        current.remove(key)
+    except KeyError:
+        pass
 
 def main():
     """
     Main
     """
 
-    testmode = 0
-    webcam_pic, pic_path = capture_img(0, testmode) # Capture webcam img
-    preencoded_imgs = pre_encode_user_faces() # Get preencoded imgs
-    faceid_result = classify_face(webcam_pic, preencoded_imgs, testmode) # Compare encoded datasets
-    #print(faceid_result)
-    return faceid_result
-
-
-
+    with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-#Full execution time is 1.8904139995574951
