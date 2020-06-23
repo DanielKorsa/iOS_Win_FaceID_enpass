@@ -11,9 +11,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Enpass 6.4.2 (668)
-Firefox 77.0.1
-macOS Catalania
+* Enpass 6.4.2 (668)
+* Firefox 77.0.1
+* macOS Catalania
 
 ### Installing
 
@@ -47,5 +47,5 @@ Contributers are welcome to adapt this code for Windows and other password manag
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+---
 
