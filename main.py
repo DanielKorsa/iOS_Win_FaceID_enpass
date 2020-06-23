@@ -148,11 +148,10 @@ def main():
     """
 
     testmode = 0
-    webcam_pic, pic_path = capture_img(0, testmode)
-    #encd_temp_pic = encode_face_img(temp_pic)
-    preencoded_imgs = pre_encode_user_faces()
-    faceid_result = classify_face(webcam_pic, preencoded_imgs, testmode)
-    print(faceid_result)
+    webcam_pic, pic_path = capture_img(0, testmode) # Capture webcam img
+    preencoded_imgs = pre_encode_user_faces() # Get preencoded imgs
+    faceid_result = classify_face(webcam_pic, preencoded_imgs, testmode) # Compare encoded datasets
+    #print(faceid_result)
     return faceid_result
 
 
