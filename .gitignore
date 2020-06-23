@@ -1,12 +1,15 @@
 # My test files
 
-webcam_pics/
+webcam_pics/*
+faces/*
 venv_enpass
 trash/
 .pylintrc
-/faces/**
-autogui_enter_password.py
 TEST/
+
+# Keep
+!webcam_pics/.gitkeep
+!faces/.gitkeep
 
 
 # Editors
