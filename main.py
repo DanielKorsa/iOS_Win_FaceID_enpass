@@ -1,7 +1,7 @@
 #!.venv_enpass/bin/python
-"""
-FaceID Recognition for Enpass Password Manager on MacOS
-"""
+
+# FaceID Recognition for Enpass Password Manager on MacOS
+
 import os
 import subprocess
 import re
@@ -14,33 +14,37 @@ from numpy import array
 import pyautogui as pag
 from pynput import keyboard
 
-#Get a webcam pic
 
 def capture_img(camera, testmode):
-    """
-    Get an image from webcam 0 - internal, 1 - external
-    :return: captured img and img path
+    """[Capture an img with a webcam]
+
+    Args:
+        camera ([int]): [0 - internal, 1 - external]
+        testmode ([int]): [0 - dont save img, 1 - save img locally]
+
+    Returns:
+        [image]: [Captured image]
     """
 
     capture = cv2.VideoCapture(camera) # 0 - use built in camera
-    return_value, image = capture.read()
-    del capture
+    image = capture.read()[1]
+    del capture # delete captured img
     if testmode == 1:
-        # For test purposes -> save pic
+        # Save img locally in folder
         webcam_pics_dir = str(Path.cwd() / "webcam_pics")
+        if not os.path.exists(webcam_pics_dir):
+            os.makedirs(webcam_pics_dir) # Create a dir if doesnt exist
+        
         now = datetime.now().strftime("%d_%m_%Y_%H_%M_%S_")
         pic_path = webcam_pics_dir + "/" + now + '.jpg'
         cv2.imwrite(pic_path, image) # Save webcam pic
-    else:
-        pic_path = ''
 
-    return image, pic_path
+    return image
 
 def encode_face_img(img):
     """
     Encode a face on an img
     """
-    #face = fr.load_image_file("faces/" + img)
     face = fr.load_image_file(img)
     encoding = fr.face_encodings(face)[0]
 
@@ -53,7 +57,7 @@ def pre_encode_user_faces():
     :return: dict of (name, image encoded)
     """
 
-    if os.path.exists("encoded_user_faces.txt") is True:
+    if os.path.exists("encoded_user_faces.txt"):
         # If file with preencoded images exists -> read it
 
         with open("encoded_user_faces.txt", 'r') as f:
@@ -91,7 +95,6 @@ def classify_face(webcam_pic, preencoded_imgs, testmode):
         result = False
 
     else:
-
         matches = fr.compare_faces(faces_preencoded, webcam_face_encoding[0])
 
         # Can be tweaked -> check if webcam face is recognized more then on 1 pic
@@ -213,14 +216,15 @@ def on_press(key):
     """
     Execute code on key combination press
     """
+    TESTMODE = 1 # for testing
+    
     if key in COMBINATION:
         current.add(key)
         if all(k in current for k in COMBINATION):
             if check_process('firefox') and check_process('Enpass') is True:
-                testmode = 0 # for interactive testing
-                webcam_pic, pic_path = capture_img(0, testmode) # Capture webcam img
+                webcam_pic = capture_img(0, TESTMODE) # Capture webcam img
                 preencoded_imgs = pre_encode_user_faces() # Get preencoded imgs
-                faceid_result, msg = classify_face(webcam_pic, preencoded_imgs, testmode)
+                faceid_result, msg = classify_face(webcam_pic, preencoded_imgs, TESTMODE)
                 print(faceid_result, msg)
                 #time.sleep(1) # if the PC is slow delay is needed while opening enpass ext
                 if faceid_result is True:
