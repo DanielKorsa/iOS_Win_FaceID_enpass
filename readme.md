@@ -1,4 +1,4 @@
-# Enpass Password Manager Face ID for macOS
+# Face ID for Enpass Password Manager (macOS/ Firefox)
 
 Use Face Id in your browser on macOS for easy and fast login.
 Insted of  entering a Master Password in Enpass browser extension one could use this python script which would recognize your face (using opencv and face_recognition) based on sample facial images you provide. 
