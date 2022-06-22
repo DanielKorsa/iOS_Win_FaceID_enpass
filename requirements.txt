@@ -9,7 +9,7 @@ keyboard==0.13.5
 lazy-object-proxy==1.4.3
 mccabe==0.6.1
 MouseInfo==0.1.3
-numpy==1.18.5
+numpy==1.22.0
 opencv-python==4.2.0.34
 Pillow==7.1.2
 PyAutoGUI==0.9.50
